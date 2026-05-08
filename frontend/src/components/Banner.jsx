@@ -32,7 +32,7 @@ const Banner = () => {
           <IoLocationOutline size={35} />
           <div className="font-semibold">
             <p>LOCATION</p>
-            <span className="text-[#14A2F3]">0123 Some Place</span>
+            <span className="text-[#14A2F3]">46400 Kathmandu</span>
           </div>
         </div>
       </div>

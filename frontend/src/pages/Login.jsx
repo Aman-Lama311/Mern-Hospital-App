@@ -3,7 +3,7 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // ✅ react-icons
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [state, setState] = useState("Sign Up");

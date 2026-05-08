@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaHeart, FaPlus, FaTint, FaStethoscope } from "react-icons/fa";
 import Title from "./Title";
 import { Link } from "react-router-dom";
@@ -8,57 +8,87 @@ const Service = () => {
     {
       icon: <FaStethoscope className="w-6 h-6" />,
       title: "Free Checkup",
-      isActive: false,
       customIcon: true,
+      description:
+        "Our free checkup service provides basic health screenings for all patients. Early detection saves lives — visit us for a comprehensive health assessment at no cost.",
+      features: [
+        "Blood pressure check",
+        "BMI assessment",
+        "Vision screening",
+        "Basic blood tests",
+        "Consultation with doctor",
+        "Health advice",
+      ],
     },
     {
       icon: <FaHeart className="w-6 h-6" />,
       title: "Cardiogram",
-      isActive: true,
       customIcon: false,
+      description:
+        "Our cardiology department provides advanced ECG and heart monitoring services. Our experienced cardiologists ensure your heart health is in the best hands.",
+      features: [
+        "ECG monitoring",
+        "Heart rate analysis",
+        "Stress testing",
+        "24hr Holter monitor",
+        "Echo cardiography",
+        "Expert cardiologists",
+      ],
     },
     {
       icon: <FaPlus className="w-6 h-6" />,
       title: "DNA Testing",
-      isActive: false,
       customIcon: false,
+      description:
+        "Cutting-edge DNA testing services to help identify genetic conditions, ancestry, and personalized treatment plans tailored specifically to your genetic profile.",
+      features: [
+        "Genetic screening",
+        "Ancestry analysis",
+        "Disease risk assessment",
+        "Personalized reports",
+        "Expert counseling",
+        "Confidential results",
+      ],
     },
     {
       icon: <FaTint className="w-6 h-6" />,
       title: "Blood Bank",
-      isActive: false,
       customIcon: false,
+      description:
+        "Our blood bank operates 24/7 to ensure safe and adequate blood supply for all patients in need. Donate blood today and save a life in your community.",
+      features: [
+        "24/7 availability",
+        "Safe blood storage",
+        "All blood types",
+        "Rapid testing",
+        "Emergency supply",
+        "Donation drives",
+      ],
     },
   ];
 
-  const features = [
-    "A Passion for Healing",
-    "5-Star Care",
-    "All our best",
-    "Believe in Us",
-    "A Legacy of Excellence",
-    "Always Caring",
-  ];
+  const [activeIndex, setActiveIndex] = useState(1);
+
+  const activeService = services[activeIndex];
 
   return (
     <div className="px-4 md:px-[10%] py-10 min-h-screen">
-      {/* Title Section */}
       <div className="text-center mx-auto max-w-4xl my-8">
         <Title line1="CARE YOU CAN BELIEVE IN" line2="Our Services" />
       </div>
 
-      {/* Main Content Grid */}
       <div className="flex flex-col xl:flex-row gap-8 max-w-7xl mx-auto">
-        {/* Left Sidebar - Services Menu */}
+        {/* Left Sidebar */}
         <div className="w-full xl:w-72 flex-shrink-0">
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
             {services.map((service, index) => (
               <div
                 key={index}
-                className={`p-6 text-center transition-all duration-300 hover:bg-gray-50 cursor-pointer ${
-                  service.isActive
+                onClick={() => setActiveIndex(index)}
+                className={`p-6 text-center transition-all duration-300 cursor-pointer ${
+                  activeIndex === index
                     ? "bg-blue-900 text-white"
-                    : "border-b border-gray-100 last:border-b-0"
+                    : "border-b border-gray-100 last:border-b-0 hover:bg-gray-50"
                 }`}
               >
                 {service.customIcon ? (
@@ -72,7 +102,7 @@ const Service = () => {
                 ) : (
                   <div
                     className={`mb-4 flex justify-center ${
-                      service.isActive ? "text-white" : "text-blue-600"
+                      activeIndex === index ? "text-white" : "text-blue-600"
                     }`}
                   >
                     {service.icon}
@@ -80,7 +110,7 @@ const Service = () => {
                 )}
                 <h3
                   className={`font-semibold text-lg ${
-                    service.isActive ? "text-white" : "text-gray-800"
+                    activeIndex === index ? "text-white" : "text-gray-800"
                   }`}
                 >
                   {service.title}
@@ -88,7 +118,6 @@ const Service = () => {
               </div>
             ))}
 
-            {/* View All Button */}
             <Link to={"/services"}>
               <div className="p-6 bg-blue-900 text-center cursor-pointer hover:bg-blue-800 transition-colors duration-300">
                 <h3 className="font-semibold text-white text-lg">
@@ -99,17 +128,16 @@ const Service = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
+        {/* Main Content Area — changes based on active tab */}
         <div className="flex-1 min-w-0">
-          <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 border border-gray-100">
+          <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 border border-gray-100 transition-all duration-300">
             <div className="max-w-4xl">
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-10 leading-tight">
-                A passion for putting patients first.
+                {activeService.title}
               </h1>
 
-              {/* Features Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                {features.map((feature, index) => (
+                {activeService.features.map((feature, index) => (
                   <div key={index} className="flex items-center gap-4 group">
                     <div className="w-4 h-4 bg-blue-600 rounded-full flex-shrink-0 group-hover:scale-110 transition-transform duration-200"></div>
                     <span className="text-gray-700 text-lg font-medium">
@@ -119,28 +147,14 @@ const Service = () => {
                 ))}
               </div>
 
-              {/* Description Text */}
               <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Quisque placerat scelerisque tortor ornare ornare. Quisque
-                  placerat scelerisque tortor ornare ornare Convallis felis
-                  vitae tortor augue. Velit nascetur proin massa in. Consequat
-                  faucibus porttitor enim et.
-                </p>
-
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Quisque placerat scelerisque. Convallis felis vitae tortor
-                  augue. Velit nascetur proin massa in.
-                </p>
+                <p>{activeService.description}</p>
               </div>
 
-              {/* CTA Button */}
               <Link to={"/services"}>
                 <div className="mt-10">
                   <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer">
-                    Learn More About Our Services
+                    Learn More About {activeService.title}
                   </button>
                 </div>
               </Link>
@@ -150,7 +164,6 @@ const Service = () => {
 
         {/* Right Images */}
         <div className="w-full xl:w-80 flex-shrink-0 space-y-3">
-          {/* Top Image - Doctor with Patient */}
           <div className="bg-gray-200 rounded-2xl overflow-hidden h-56 relative group shadow-lg">
             <img
               src="https://img.freepik.com/premium-photo/african-young-man-mask-measuring-pulse-pregnant-woman-caring-about-her-health-hospital_236854-30954.jpg"
@@ -161,7 +174,6 @@ const Service = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
 
-          {/* Bottom Image - Medical Team */}
           <div className="bg-gray-200 rounded-2xl overflow-hidden h-72 relative group shadow-lg">
             <img
               src="https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2018/10/03/medical.jpg"
@@ -172,7 +184,6 @@ const Service = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
 
-          {/* Stats Card */}
           <div className="bg-blue-900 rounded-2xl p-6 text-white shadow-lg">
             <div className="text-center">
               <h3 className="text-3xl font-bold mb-2">25+</h3>
