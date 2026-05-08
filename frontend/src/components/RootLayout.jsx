@@ -3,7 +3,7 @@ import Banner from "./Banner";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-const Rootlayout = () => {
+const RootLayout = () => {
   return (
     <div>
       <div className="sticky top-0 z-20 bg-white">
@@ -15,4 +15,4 @@ const Rootlayout = () => {
     </div>
   );
 };
-export default Rootlayout;
+export default RootLayout;
