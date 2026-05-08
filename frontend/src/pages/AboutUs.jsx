@@ -38,7 +38,7 @@ const AboutUs = () => {
                   {/* Two smaller images */}
                   <div className="overflow-hidden rounded-2xl shadow-lg">
                     <img
-                      src="https://images.unsplash.com/photo-1530026405186-ed1f139313f3?w=400&h=250&fit=crop&auto=format"
+                      src="https://images.unsplash.com/photo-1579684453423-f84349ef60b0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1lZGljYWwlMjB0ZWFtfGVufDB8fDB8fHww"
                       loading="lazy"
                       alt="Medical team"
                       className="w-full h-36 sm:h-44 object-cover hover:scale-105 transition-transform duration-500"
