@@ -49,7 +49,7 @@ export const registerUser = async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.status(201).json({ success: true, token });
+    res.status(201).json({ success: true, token, name: user.name });
   } catch (error) {
     console.error("Register error:", error);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -84,7 +84,7 @@ export const loginUser = async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.json({ success: true, token });
+    res.json({ success: true, token, name: user.name });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -185,24 +185,40 @@ export const bookAppointment = async (req, res) => {
         .json({ success: false, message: "Doctor not available" });
     }
 
-    // Atomic slot booking
+    // duplicate appointment check
+    const existingAppointment = await appointmentModel.findOne({
+      userId,
+      docId,
+      slotDate,
+      slotTime,
+      cancelled: false,
+    });
+
+    if (existingAppointment) {
+      return res.status(409).json({
+        success: false,
+        message: "You already have this appointment booked.",
+      });
+    }
+
+    // Atomic slot booking - FIXED
     const updateResult = await DoctorModel.updateOne(
       {
         _id: docId,
         $or: [
           { [`slots_booked.${slotDate}`]: { $exists: false } },
-          { [`slots_booked.${slotDate}`]: { $ne: slotTime } },
+          { [`slots_booked.${slotDate}`]: { $nin: [slotTime] } },
         ],
       },
       {
         $addToSet: { [`slots_booked.${slotDate}`]: slotTime },
-      }
+      },
     );
 
     if (updateResult.matchedCount === 0 || updateResult.modifiedCount === 0) {
       return res.status(409).json({
         success: false,
-        message: "This time slot has already been booked.",
+        message: "This time slot is already booked.",
       });
     }
 

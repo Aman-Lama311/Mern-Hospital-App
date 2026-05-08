@@ -22,6 +22,9 @@ const Appointment = () => {
     setDocSlots([]);
     let today = new Date();
 
+    // already booked slots from docInfo
+    const slotsBooked = docInfo.slots_booked || {};
+
     for (let i = 0; i < 7; i++) {
       let currentDate = new Date(today);
       currentDate.setDate(today.getDate() + i);
@@ -31,7 +34,7 @@ const Appointment = () => {
 
       if (i === 0) {
         currentDate.setHours(
-          currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10
+          currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10,
         );
         currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
       } else {
@@ -47,23 +50,31 @@ const Appointment = () => {
           minute: "2-digit",
         });
 
+        // Build the slotDate key the same way bookAppointment does
+        let day = currentDate.getDate();
+        let month = currentDate.getMonth() + 1;
+        let year = currentDate.getFullYear();
+        const slotDateKey = `${day}_${month}_${year}`;
 
+        // if this time is already booked
+        const isBooked = slotsBooked[slotDateKey]?.includes(formattedTime);
+
+        if (!isBooked) {
           timeSlots.push({
             datetime: new Date(currentDate),
             time: formattedTime,
           });
-        
+        }
 
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
 
-      // push the day with no slots if empty
       if (timeSlots.length === 0) {
         timeSlots.push({
           datetime: new Date(
             today.getFullYear(),
             today.getMonth(),
-            today.getDate() + i
+            today.getDate() + i,
           ),
           time: null,
         });
@@ -74,8 +85,15 @@ const Appointment = () => {
   };
 
   const fetchDocInfo = async () => {
-    const docInfo = doctors.find((doc) => doc._id === docId);
-    setDocInfo(docInfo);
+    try {
+      const { data } = await axios.get(backendUrl + `/api/doctor/${docId}`);
+      if (data.success) {
+        setDocInfo(data.doctor);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch doctor info");
+    }
   };
 
   const bookAppointment = async () => {
@@ -97,25 +115,29 @@ const Appointment = () => {
         { docId, slotDate, slotTime },
         {
           headers: { token },
-        }
+        },
       );
 
       if (data.success) {
         toast.success(data.message);
         getDoctorsData();
+        await fetchDocInfo();
         navigate("/my-appointments");
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.message || "Failed to book appointment");
+      const errMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to book appointment";
+      toast.error(errMsg);
     }
   };
 
   useEffect(() => {
-    fetchDocInfo();
-  }, [doctors, docId]);
+    if (docId) fetchDocInfo();
+  }, [docId]);
 
   useEffect(() => {
     if (docInfo) getAvilableSlots();
@@ -172,7 +194,10 @@ const Appointment = () => {
           <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
             {docSlots.map((item, index) => (
               <div
-                onClick={() => setSlotIndex(index)}
+                onClick={() => {
+                  setSlotIndex(index);
+                  setSlotTime("");
+                }}
                 key={index}
                 className={`text-center py-6 min-w-16 rounded-full cursor-pointer ${
                   slotIndex === index

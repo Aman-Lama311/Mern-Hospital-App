@@ -3,12 +3,14 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // ✅ react-icons
 
 const Login = () => {
   const [state, setState] = useState("Sign Up");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const { backendUrl, token, setToken } = useContext(AppContext);
@@ -25,6 +27,7 @@ const Login = () => {
         if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);
+          toast.success(`Welcome, ${data.name}!`);
         } else {
           toast.error(data.message);
         }
@@ -36,12 +39,13 @@ const Login = () => {
         if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);
+          toast.success(`Welcome back, ${data.name}!`);
         } else {
           toast.error(data.message);
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
@@ -58,9 +62,10 @@ const Login = () => {
           {state === "Sign Up" ? "Create Account" : "Login"}
         </p>
         <p>
-          Please {state === "Sign Up" ? "sign up" : "log in"} to book and
+          Please {state === "Sign Up" ? "sign up" : "log in"} to book an
           appointment
         </p>
+
         {state === "Sign Up" && (
           <div className="w-full">
             <p>Full Name</p>
@@ -69,6 +74,7 @@ const Login = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
         )}
@@ -80,23 +86,41 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
+
         <div className="w-full">
           <p>Password</p>
-          <input
-            className="border border-zinc-300 rounded w-full p-2 mt-1"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <input
+              className="border border-zinc-300 rounded w-full p-2 mt-1 pr-10"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-2 top-1/2 -translate-y-1/4 text-zinc-400 hover:text-zinc-600"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible size={20} />
+              ) : (
+                <AiOutlineEye size={20} />
+              )}
+            </button>
+          </div>
         </div>
+
         <button
           type="submit"
           className="bg-[#14A2F3] text-white w-full py-2 rounded-md"
         >
           {state === "Sign Up" ? "Create Account" : "Login"}
         </button>
+
         {state === "Sign Up" ? (
           <p>
             Already have an account?{" "}
@@ -109,12 +133,12 @@ const Login = () => {
           </p>
         ) : (
           <p>
-            Create an new account?{" "}
+            Create a new account?{" "}
             <span
               onClick={() => setState("Sign Up")}
               className="text-[#14A2F3] cursor-pointer underline"
             >
-              click here
+              Click here
             </span>
           </p>
         )}
@@ -122,4 +146,5 @@ const Login = () => {
     </form>
   );
 };
+
 export default Login;

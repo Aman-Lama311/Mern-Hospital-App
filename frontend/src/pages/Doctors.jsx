@@ -128,9 +128,17 @@ const Doctors = () => {
             >
               <img src={item.image} alt="top-doctors" />
               <div className="flex flex-col items-start justify-center p-4">
-                <div className="flex items-center gap-2">
-                  <p className="w-2.5 h-2.5 bg-green-500 rounded-full"></p>
-                  <p>Avilable</p>
+                <div
+                  className={`flex items-center gap-2  ${
+                    item.available ? "text-green-500" : "text-gray-500"
+                  }`}
+                >
+                  <p
+                    className={`w-2.5 h-2.5  rounded-full ${
+                      item.available ? "bg-green-500" : "bg-gray-500"
+                    }`}
+                  ></p>
+                  <p>{item.available ? "Available" : "Not Available"}</p>
                 </div>
                 <h1 className="text-lg font-medium">{item.name}</h1>
                 <p>{item.speciality}</p>
