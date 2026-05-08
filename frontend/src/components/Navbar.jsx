@@ -25,6 +25,17 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // ✅ Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".profile-dropdown")) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="flex justify-between items-center bg-[#202B6D] text-white py-4 px-4 sm:px-[10%]">
       <h1
@@ -51,7 +62,7 @@ const Navbar = () => {
                 ]
               }
             </NavLink>
-          )
+          ),
         )}
       </div>
 
@@ -59,59 +70,57 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         {token ? (
           <div
-            className="flex items-center gap-2 cursor-pointer relative group"
-            onClick={() => {
-              if (isMobile) setDropdownOpen((prev) => !prev);
-            }}
+            className="profile-dropdown flex items-center gap-2 cursor-pointer relative"
+            onClick={() => setDropdownOpen((prev) => !prev)}
           >
             <img
               className="w-8 rounded-full"
               src={userData.image}
               alt="profile"
             />
-            <img className="w-3" src={dropdownIcon} alt="dropdown_icon" />
-
-            {/* Dropdown */}
-            <div
-              className={`absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 ${
-                isMobile
-                  ? dropdownOpen
-                    ? "block"
-                    : "hidden"
-                  : "hidden group-hover:block"
+            {/* Arrow rotates up when open, down when closed */}
+            <img
+              className={`w-3 transition-transform duration-300 ${
+                dropdownOpen ? "rotate-0" : "rotate-180"
               }`}
-            >
-              <div className="min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">
-                <p
-                  onClick={() => {
-                    navigate("my-profile");
-                    setDropdownOpen(false);
-                  }}
-                  className="hover:text-black cursor-pointer"
-                >
-                  My Profile
-                </p>
-                <p
-                  onClick={() => {
-                    navigate("my-appointments");
-                    setDropdownOpen(false);
-                  }}
-                  className="hover:text-black cursor-pointer"
-                >
-                  My Appointments
-                </p>
-                <p
-                  onClick={() => {
-                    setToken(false);
-                    setDropdownOpen(false);
-                    logout();
-                  }}
-                  className="hover:text-black cursor-pointer"
-                >
-                  Logout
-                </p>
+              src={dropdownIcon}
+              alt="dropdown_icon"
+            />
+
+            {/* Dropdown — toggles on click */}
+            {dropdownOpen && (
+              <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20">
+                <div className="min-w-48 bg-stone-100 rounded flex flex-col gap-4 p-4">
+                  <p
+                    onClick={() => {
+                      navigate("/my-profile");
+                      setDropdownOpen(false);
+                    }}
+                    className="hover:text-black cursor-pointer"
+                  >
+                    My Profile
+                  </p>
+                  <p
+                    onClick={() => {
+                      navigate("/my-appointments");
+                      setDropdownOpen(false);
+                    }}
+                    className="hover:text-black cursor-pointer"
+                  >
+                    My Appointments
+                  </p>
+                  <p
+                    onClick={() => {
+                      logout();
+                      setDropdownOpen(false);
+                    }}
+                    className="hover:text-black cursor-pointer"
+                  >
+                    Logout
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <button
