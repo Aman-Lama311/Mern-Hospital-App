@@ -1,18 +1,28 @@
-import { useContext } from "react";
-import { assets } from "../assets/assets";
+import { useContext, useState } from "react";
 import { AdminContext } from "../context/AdminContext";
-import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { setAToken, backendUrl } = useContext(AdminContext);
-  console.log(backendUrl);
+  const navigate = useNavigate();
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("submit-btn")?.click();
+    }
+  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { data } = await axios.post(backendUrl + "/api/admin/login", {
         email,
@@ -22,11 +32,14 @@ const Login = () => {
         localStorage.setItem("aToken", data.token);
         setAToken(data.token);
         toast.success(data.message);
+        navigate("/admin-dashboard");
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,6 +57,7 @@ const Login = () => {
           <input
             onChange={(e) => setEmail(e.target.value)}
             value={email}
+            onKeyDown={handleKeyDown}
             className="border border-[#DADADA] rounded w-full p-2 mt-1"
             type="email"
             required
@@ -51,16 +65,37 @@ const Login = () => {
         </div>
         <div className="w-full">
           <p>Password</p>
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            className="border border-[#DADADA] rounded w-full p-2 mt-1"
-            type="password"
-            required
-          />
+          <div className="relative">
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              onKeyDown={handleKeyDown}
+              className="border border-[#DADADA] rounded w-full p-2 mt-1 pr-10"
+              type={showPassword ? "text" : "password"}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
         </div>
-        <button className="bg-[#5F6FFF] w-full text-white py-2 mt-2 rounded-md text-sm cursor-pointer">
-          Login
+        <button
+          id="submit-btn"
+          disabled={loading}
+          className="bg-[#5F6FFF] w-full text-white py-2 mt-2 rounded-md text-sm cursor-pointer disabled:opacity-70 flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <FaSpinner className="animate-spin" />
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
         </button>
       </div>
     </form>

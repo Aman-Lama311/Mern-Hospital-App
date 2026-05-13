@@ -17,6 +17,13 @@ const Login = () => {
 
   const { backendUrl, token, setToken } = useContext(AppContext);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("submit-btn")?.click();
+    }
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -79,6 +86,7 @@ const Login = () => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              onKeyDown={handleKeyDown}
               required
             />
           </div>
@@ -91,6 +99,7 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyDown}
             required
           />
         </div>
@@ -103,6 +112,7 @@ const Login = () => {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               required
             />
             <button
@@ -120,6 +130,7 @@ const Login = () => {
         </div>
 
         <button
+          id="submit-btn"
           type="submit"
           disabled={loading}
           className="bg-[#14A2F3] text-white w-full py-2 rounded-md disabled:opacity-70 flex items-center justify-center gap-2"

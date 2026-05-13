@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import MyProfile from "./pages/MyProfile";
 import MyAppointments from "./pages/MyAppointments";
 import Appointment from "./pages/Appointment";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -47,15 +48,15 @@ const App = () => {
         },
         {
           path: "/my-profile",
-          element: <MyProfile />,
+          element: <ProtectedRoute><MyProfile /></ProtectedRoute>,
         },
         {
           path: "/my-appointments",
-          element: <MyAppointments />,
+          element: <ProtectedRoute><MyAppointments /></ProtectedRoute>,
         },
         {
           path: "/appointment/:docId",
-          element: <Appointment />,
+          element: <ProtectedRoute><Appointment /></ProtectedRoute>,
         },
         {
           path: "/login",

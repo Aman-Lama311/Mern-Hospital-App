@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { AdminContext } from "../context/AdminContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa";
 
 const AddDoctor = () => {
   const [docImg, setDocImg] = useState(false);
@@ -17,14 +18,17 @@ const AddDoctor = () => {
   const [degree, setDegree] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { aToken, backendUrl } = useContext(AdminContext);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (!docImg) {
         toast.error("Image Not Selected");
+        return;
       }
       const formData = new FormData();
       formData.append("image", docImg);
@@ -40,8 +44,6 @@ const AddDoctor = () => {
         "address",
         JSON.stringify({ line1: address1, line2: address2 })
       );
-
-      //console.log formData
 
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
@@ -71,6 +73,8 @@ const AddDoctor = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -225,8 +229,18 @@ const AddDoctor = () => {
             required
           />
         </div>
-        <button className="bg-[#14A2F3] px-10 py-3 mt-4 text-white rounded-full">
-          Add Doctor
+        <button
+          disabled={loading}
+          className="bg-[#14A2F3] px-10 py-3 mt-4 text-white rounded-full disabled:opacity-70 flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <>
+              <FaSpinner className="animate-spin" />
+              Adding Doctor...
+            </>
+          ) : (
+            "Add Doctor"
+          )}
         </button>
       </div>
     </form>

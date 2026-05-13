@@ -3,7 +3,7 @@ import Login from "./pages/Login";
 import { AdminContext } from "./context/AdminContext";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import AllAppointments from "./pages/AllAppointments";
 import AddDoctor from "./pages/AddDoctor";
@@ -17,7 +17,7 @@ const App = () => {
       <div className="flex items-start">
         <Sidebar />
         <Routes>
-          <Route path="/" element={<></>} />
+          <Route path="/" element={<Navigate to="/admin-dashboard" replace />} />
           <Route path="/admin-dashboard" element={<Dashboard />} />
           <Route path="/all-appointments" element={<AllAppointments />} />
           <Route path="/add-doctor" element={<AddDoctor />} />

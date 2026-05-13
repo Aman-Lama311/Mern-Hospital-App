@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { UserModel } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
-import { DoctorModel } from "../models/docterModel.js";
+import { DoctorModel } from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
 
 // Register user
