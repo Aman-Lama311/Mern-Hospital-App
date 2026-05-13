@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FaSpinner } from "react-icons/fa";
 
 const Login = () => {
   const [state, setState] = useState("Sign Up");
@@ -11,12 +12,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const { backendUrl, token, setToken } = useContext(AppContext);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (state === "Sign Up") {
         const { data } = await axios.post(backendUrl + "/api/user/register", {
@@ -46,6 +49,8 @@ const Login = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,9 +121,17 @@ const Login = () => {
 
         <button
           type="submit"
-          className="bg-[#14A2F3] text-white w-full py-2 rounded-md"
+          disabled={loading}
+          className="bg-[#14A2F3] text-white w-full py-2 rounded-md disabled:opacity-70 flex items-center justify-center gap-2"
         >
-          {state === "Sign Up" ? "Create Account" : "Login"}
+          {loading ? (
+            <>
+              <FaSpinner className="animate-spin" />
+              {state === "Sign Up" ? "Creating Account..." : "Logging in..."}
+            </>
+          ) : (
+            state === "Sign Up" ? "Create Account" : "Login"
+          )}
         </button>
 
         {state === "Sign Up" ? (

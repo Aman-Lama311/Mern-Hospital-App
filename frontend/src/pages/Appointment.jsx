@@ -6,6 +6,7 @@ import infoIcon from "../assets/info_icon.svg";
 import RelatedDoctors from "../components/RelatedDoctors";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const Appointment = () => {
   const [docInfo, setDocInfo] = useState(null);
@@ -16,6 +17,7 @@ const Appointment = () => {
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const getAvilableSlots = async () => {
@@ -102,6 +104,7 @@ const Appointment = () => {
       return navigate("/login");
     }
 
+    setLoading(true);
     try {
       const date = docSlots[slotIndex][0].datetime;
 
@@ -132,6 +135,8 @@ const Appointment = () => {
         error.message ||
         "Failed to book appointment";
       toast.error(errMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -234,9 +239,17 @@ const Appointment = () => {
 
           <button
             onClick={bookAppointment}
-            className="text-white text-sm px-14 py-3 bg-[#14A2F3] rounded-full my-6 cursor-pointer hover:scale-105 transition-all duration-300"
+            disabled={loading}
+            className="text-white text-sm px-14 py-3 bg-[#14A2F3] rounded-full my-6 cursor-pointer hover:scale-105 transition-all duration-300 disabled:opacity-70 flex items-center justify-center gap-2"
           >
-            Book an Appointment
+            {loading ? (
+              <>
+                <FaSpinner className="animate-spin" />
+                Booking...
+              </>
+            ) : (
+              "Book an Appointment"
+            )}
           </button>
         </div>
 
