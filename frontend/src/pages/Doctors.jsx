@@ -126,7 +126,7 @@ const Doctors = () => {
               key={index}
               className="border border-gray-100 shadow-xl rounded-md cursor-pointer hover:translate-y-[-10px] transition-all duration-300"
             >
-              <img src={item.image} alt="top-doctors" />
+              <img src={item.image} alt="top-doctors" className="w-full h-48 object-cover" />
               <div className="flex flex-col items-start justify-center p-4">
                 <div
                   className={`flex items-center gap-2  ${

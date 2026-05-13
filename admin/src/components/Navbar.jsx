@@ -20,7 +20,7 @@ const Navbar = () => {
           MED<span className="text-[#14A2F3]">DICAL</span>
         </h1>
         <p className="border px-2.5 rounded-full py-0.5 border-gray-500 text-gray-600">
-          {aToken ? "Admin" : "Doctor"}
+          Admin
         </p>
       </div>
       <button
